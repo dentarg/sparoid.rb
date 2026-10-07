@@ -1,7 +1,16 @@
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
   SuggestExtensions: false
+  Exclude:
+    # Written for Spinel's subset of Ruby, which rubocop's suggestions can leave
+    - spinel/**/*
+    # spinel/build.sh's output, with a Spinel checkout
+    - build/**/*
 
 Style/StringLiterals:
   Enabled: true

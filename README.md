@@ -18,6 +18,13 @@ Or install it yourself as:
 
     $ gem install sparoid
 
+### Standalone executable
+
+The CLI is also compiled with [Spinel](https://github.com/matz/spinel) into
+one executable per platform that needs no Ruby: Linux (x86_64, arm64,
+statically linked) and macOS (x86_64, arm64). They are attached to the
+GitHub release of each version. See [spinel/README.md](spinel/README.md).
+
 ## Usage
 
 ...
@@ -42,7 +49,7 @@ To release a new version:
 2. Open a PR with the bump, get it merged into `main`.
 3. Push a tag matching the new version, e.g. `git tag v2.1.2 && git push origin v2.1.2`.
 
-The `Release` GitHub Actions workflow then builds the gem and publishes it to [rubygems.org](https://rubygems.org) via OIDC trusted publishing — no API key required.
+The `Release` GitHub Actions workflow then builds the gem and publishes it to [rubygems.org](https://rubygems.org) via OIDC trusted publishing — no API key required. The `Binaries` workflow builds the standalone executables and attaches them to the tag's GitHub release.
 
 ## Contributing
 
