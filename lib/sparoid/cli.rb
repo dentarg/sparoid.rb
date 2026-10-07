@@ -8,23 +8,20 @@ module Sparoid
   module CLI
     def self.run(args = ARGV) # rubocop:disable Metrics/AbcSize
       subcommand = args.shift
-      host = "0.0.0.0"
-      port = 8484
-      tcp_port = 22
-      config_path = "~/.sparoid.ini"
+      opts = { host: "0.0.0.0", port: 8484, tcp_port: 22, config_path: "~/.sparoid.ini" }
 
       case subcommand
       when "keygen"
         Sparoid.keygen
       when "send"
-        parse_send_options!(args, binding)
-        key, hmac_key = read_keys(config_path)
-        Sparoid.auth(key, hmac_key, host, port)
+        parse_send_options!(args, opts)
+        key, hmac_key = read_keys(opts[:config_path])
+        Sparoid.auth(key, hmac_key, opts[:host], opts[:port])
       when "connect"
-        parse_connect_options!(args, binding)
-        key, hmac_key = read_keys(config_path)
-        ips = Sparoid.auth(key, hmac_key, host, port)
-        Sparoid.fdpass(ips, tcp_port)
+        parse_connect_options!(args, opts)
+        key, hmac_key = read_keys(opts[:config_path])
+        ips = Sparoid.auth(key, hmac_key, opts[:host], opts[:port])
+        Sparoid.fdpass(ips, opts[:tcp_port])
       when "--version"
         puts Sparoid::VERSION
       else
@@ -39,19 +36,19 @@ module Sparoid
       exit 1
     end
 
-    def self.parse_send_options!(args, ctx, banner: "send")
+    def self.parse_send_options!(args, opts, banner: "send")
       OptionParser.new do |p|
         p.banner = "Usage: sparoid #{banner} [options]"
-        p.on("-h HOST", "--host=HOST", "Host to send to") { |v| ctx.local_variable_set(:host, v) }
-        p.on("-p PORT", "--port=PORT", "UDP port (default: 8484)") { |v| ctx.local_variable_set(:port, v.to_i) }
-        p.on("-c PATH", "--config=PATH", "Path to config file") { |v| ctx.local_variable_set(:config_path, v) }
+        p.on("-h HOST", "--host=HOST", "Host to send to") { |v| opts[:host] = v }
+        p.on("-p PORT", "--port=PORT", "UDP port (default: 8484)") { |v| opts[:port] = v.to_i }
+        p.on("-c PATH", "--config=PATH", "Path to config file") { |v| opts[:config_path] = v }
         yield p if block_given?
       end.parse!(args)
     end
 
-    def self.parse_connect_options!(args, ctx)
-      parse_send_options!(args, ctx, banner: "connect") do |p|
-        p.on("-P PORT", "--tcp-port=PORT", "TCP port (default: 22)") { |v| ctx.local_variable_set(:tcp_port, v.to_i) }
+    def self.parse_connect_options!(args, opts)
+      parse_send_options!(args, opts, banner: "connect") do |p|
+        p.on("-P PORT", "--tcp-port=PORT", "TCP port (default: 22)") { |v| opts[:tcp_port] = v.to_i }
       end
     end
 
