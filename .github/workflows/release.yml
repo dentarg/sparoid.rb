@@ -7,6 +7,8 @@ on:
 
 jobs:
   release:
+    # Forks build binaries from their tags (binaries.yml), the gem is 84codes'
+    if: github.repository == '84codes/sparoid.rb'
     runs-on: ubuntu-latest
     permissions:
       contents: write
