@@ -234,7 +234,7 @@ module Sparoid # rubocop:disable Metrics/ModuleLength
   # Returns nil if no global IPv6 address is available.
   def public_ipv6_by_udp
     socket = UDPSocket.new(Socket::AF_INET6)
-    socket.connect(*GOOGLE_DNS_V6)
+    socket.connect(GOOGLE_DNS_V6[0], GOOGLE_DNS_V6[1])
     addr = socket.local_address
     return addr.ip_address if global_ipv6?(addr)
 
